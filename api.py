@@ -118,11 +118,11 @@ def create_meeting(name, attendee_users, moderator_users):
             "moderator_password": moderator_pw}
     key = "meeting:%s" % meeting_id
     db.set(key, str(info))
-    db.expire(key, 86400)
+#    db.expire(key, 86400)
     
     key = "meeting_name:%s" % name
     db.set(key, 1)
-    db.expire(key, 86400)
+#    db.expire(key, 86400)
     return meeting_id
   return False
 

@@ -1,10 +1,12 @@
 #! coding: utf-8
 # pylint: disable-msg=W0311
-from bottle import route, redirect, request, run, jinja2_template, debug, static_file
+from bottle import route, redirect, request, run, jinja2_template, \
+                    debug, static_file, response
 from simplejson import dumps
 import api
+import settings
 
-@route("/")
+@route("/start")
 def main():
   default = None
   meeting_list = api.meeting_list()
@@ -13,11 +15,26 @@ def main():
     meeting_list.pop(0)
   return jinja2_template("main.html", default=default, 
                          meeting_list=meeting_list)
+  
+@route("/login", method=["GET", "POST"])
+def login():
+  if request.method == "POST":
+    username = request.params.get("username")
+    password = request.params.get("password")
+    ok = api.check(username, password)
+    if ok:
+      response.set_cookie('username', username, settings.cookie_secret)
+      response.set_cookie('password', password, settings.cookie_secret)
+      redirect('/start')
+    redirect("/login")
+  else:
+    return jinja2_template("login.html")   
+  
 
-@route("/create", method="POST")
+@route("/_create", method="POST")
 def create():
-  username = request.params.get("username")
-  password = request.params.get("password")
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
   
   ok = api.check(username, password)
   if ok:
@@ -33,11 +50,11 @@ def create():
       redirect(url)
   return "False"
 
-@route("/join", method="POST")
+@route("/_join", method="POST")
 def join():
   meeting_id = request.params.get("meeting_id")
-  username = request.params.get("username")
-  password = request.params.get("password")
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
   ok = api.check(username, password)
   if ok:
     url = api.join_meeting(username, password, meeting_id)

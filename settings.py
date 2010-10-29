@@ -4,4 +4,6 @@ redis_port = 6379
 security_salt = '58f6bc5a57bc431c7a2afdb3b9653734'
 server_address = '123.30.53.46'
 
+cookie_secret = 'directory="/WorksigBlueButton'
+
 admins = ["mod"]
