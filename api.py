@@ -173,7 +173,7 @@ def is_running(meeting_id):
   return None
 
 def add_user(username, password):
-  key = "passwd:%s" % username
+  key = "passwd:%s" % username.lower()
   if not db.get(key):
     if not password:
       password = str(uuid4())
@@ -184,7 +184,7 @@ def add_user(username, password):
   return False
 
 def change_password(username, new_password):
-  key = "passwd:%s" % username
+  key = "passwd:%s" % username.lower()
   password = md5(new_password).hexdigest()
   db.set(key, password)
   return True
@@ -194,14 +194,14 @@ def check(username, password):
   if not username or not password:
     return False
   password = md5(password).hexdigest()
-  key = "passwd:%s" % username
+  key = "passwd:%s" % username.lower()
   store_pw = db.get(key)
   if store_pw == password:
     return True
   return False
 
 def suggest(keyword):
-  key = "passwd:%s*" % keyword
+  key = "passwd:%s*" % keyword.lower()
   keys = db.keys(key)
   keys = [key.replace("passwd:", "") for key in keys]
   return list(set(keys))
