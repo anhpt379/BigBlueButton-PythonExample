@@ -8,6 +8,11 @@ import settings
 
 @route("/start")
 def main():
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
+  ok = api.check(username, password)
+  if not ok:
+    redirect("/login")
   default = None
   meeting_list = api.meeting_list()
   if meeting_list:
@@ -29,6 +34,13 @@ def login():
     redirect("/login")
   else:
     return jinja2_template("login.html")   
+  
+  
+@route("/logout")
+def logout():
+  response.delete_cookie("username")
+  response.delete_cookie("password")
+  redirect("/login")
   
 
 @route("/_create", method="POST")
@@ -94,5 +106,5 @@ def static(filename):
 
 if __name__ == "__main__":
   debug(True)
-  run(port=9999, server="meinheld")
+  run(port=8888, server="cherrypy")
   
