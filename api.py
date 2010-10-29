@@ -177,9 +177,10 @@ def add_user(username, password):
   if not db.get(key):
     if not password:
       password = str(uuid4())
+      auto_passwd = password
     password = md5(password).hexdigest()
     db.set(key, password)
-    return password
+    return auto_passwd
   return False
 
 def change_password(username, new_password):
