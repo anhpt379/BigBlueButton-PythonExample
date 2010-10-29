@@ -182,6 +182,13 @@ def add_user(username, password):
     return password
   return False
 
+def change_password(username, new_password):
+  key = "passwd:%s" % username
+  password = md5(new_password).hexdigest()
+  db.set(key, password)
+  return True
+  
+
 def check(username, password):
   if not username or not password:
     return False

@@ -93,7 +93,7 @@ def change_password():
     retype = request.params.get("retype")
     ok = api.check(username, old_password)
     if ok and new_passwd == retype:
-      api.add_user(username, new_passwd)
+      api.change_password(username, new_passwd)
       return "OK"
     return "False"
       
