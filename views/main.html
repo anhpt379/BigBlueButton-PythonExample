@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Video Conferencing</title>
+    <link rel="stylesheet" href="/static/css/facelist.css" type="text/css" media="screen" title="Facelist" charset="utf-8" />
+    <!--[if IE]>
+    <link href="css/facelist_ie.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <script type="text/javascript" src="/static/javascript/jquery-1.2.6.min.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.facelist.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {       
+        $("#attendees").autocomplete("/suggest", properties = { 
+                              matchContains: true,
+                              minChars: 2,
+                              selectFirst: true, 
+                              intro_text: "Type Name", 
+                              no_result: "No Names"
+                            });                    
+        });
+    </script>
+    <style type="text/css">
+      body {
+          margin: 0 auto;
+          width: 550px;
+          text-align: left;
+      }
+      input[type="text"], input[type="password"] {
+        border: 1px solid #999;
+        padding: 13px 7px 0px;
+        width: 500px;
+      }
+      
+      label {
+        width: 150px;
+        display: block;
+        font-size: 13px;
+      }
+    </style>    
+  </head>
+  
+  <body id="test">  
+    <h1>Create a meeting:</h1> 
+    <form method="POST" action="/create" id="create-meeting" accept-charset="utf-8">
+      <label>Meeting's name:</label> 
+      <input type="text" name="name" />
+      
+      <label>Your name:</label> 
+      <input type="text" name="username" />
+      
+      <label>Your password:</label> 
+      <input type="password" name="password" /><br>
+     
+      <label>Attendees:</label> 
+      <ul class="facelist">
+        <li class="token-input"><input class="maininput" id="attendees" type="text" /></li>
+      </ul>
+      <div id="result_list" style="display:none;"></div>
+      <br><br>
+      <input type="submit" value="Create" />
+    </form>
+    
+    <h1>or join a meeting:</h1>
+    <form method="POST" action="/join">
+      <select name="meeting_id" id="meeting_id">
+        {% if default %}
+        <option value="{{ default.id }}" selected="selected">{{ default.name }}</option>
+        {% for i in meeting_list %}
+          <option value="{{ i.id }}" selected="selected">{{ i.name }}</option>
+        {% endfor %}
+        {% endif %}
+      </select>
+      
+      <label>Your name:</label> 
+      <input type="text" name="username" /><br>
+      
+      <label>Your password:</label> 
+      <input type="text" name="password" /><br>
+      
+      <input type="submit" value="Join" />      
+    </form>
+    <a href="/change_password">Change password</a>
+  </body>  
+</html>
