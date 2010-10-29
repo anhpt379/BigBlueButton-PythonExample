@@ -182,7 +182,9 @@ def add_user(username, password):
     return password
   return False
 
-def check(username, password=''):
+def check(username, password):
+  if not username or not password:
+    return False
   password = md5(password).hexdigest()
   key = "passwd:%s" % username
   store_pw = db.get(key)
