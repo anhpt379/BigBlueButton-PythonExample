@@ -94,6 +94,7 @@ def change_password():
     ok = api.check(username, old_password)
     if ok and new_passwd == retype:
       api.change_password(username, new_passwd)
+      response.set_cookie('password', new_passwd, settings.cookie_secret)
       return "OK"
     return "False"
       
