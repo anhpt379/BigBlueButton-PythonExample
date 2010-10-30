@@ -24,12 +24,14 @@ def edit():
 #      username = username.lower()
 #      if username in users:
 #        users.remove(username)
-      
+      attendee_users = info.get("attendee_users")
       if "" in info.get("attendee_users"):
-        info.get("attendee_users").remove("")
+        attendee_users.remove("")
+      
+      attendee_users = [x.strip() for x in attendee_users]  # remove start/end space
         
-      for user in info.get("attendee_users"):
-        users.remove(user)
+      users = [x for x in users if x not in attendee_users]
+
       return jinja2_template('drag-n-drop-lists.html', 
                              users=users,
                              info=info)
