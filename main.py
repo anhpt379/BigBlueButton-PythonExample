@@ -143,5 +143,5 @@ def static(filename):
 
 if __name__ == "__main__":
   debug(True)
-  run(host="0.0.0.0", port=8888)#, server="cherrypy")
+  run(host="0.0.0.0", port=8888, server="cherrypy")
   
