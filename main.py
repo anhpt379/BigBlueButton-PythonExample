@@ -6,6 +6,41 @@ from simplejson import dumps
 import api
 import settings
 
+@route("/_edit", method=["GET", "POST"])
+def edit():
+  if request.method == "GET":
+    username = request.get_cookie("username", settings.cookie_secret)
+    password = request.get_cookie("password", settings.cookie_secret)
+    ok = api.check(username, password)
+    if ok:
+      meeting_id = request.params.get("meeting_id")
+      info = api.get_meeting_info(meeting_id)
+      
+      if username not in info.get("moderator_users"):
+        redirect("/start")
+      
+      users = api.suggest("")
+      
+#      username = username.lower()
+#      if username in users:
+#        users.remove(username)
+      
+      if "" in info.get("attendee_users"):
+        info.get("attendee_users").remove("")
+        
+      for user in info.get("attendee_users"):
+        if user in users:
+          users.remove(user)
+      return jinja2_template('drag-n-drop-lists.html', 
+                             users=users,
+                             info=info)
+  else:
+    meeting_id = request.params.get("meeting_id")
+    name = request.params.get("name")
+    attendee_users = request.params.get("attendees").split(",")
+    api.update(meeting_id, name, attendee_users)
+    redirect('/start')
+
 @route("/start")
 def main():
   username = request.get_cookie("username", settings.cookie_secret)
@@ -43,7 +78,7 @@ def logout():
   redirect("/login")
   
 
-@route("/_create", method="POST")
+@route("/_create", method=["GET", "POST"])
 def create():
   username = request.get_cookie("username", settings.cookie_secret)
   password = request.get_cookie("password", settings.cookie_secret)
@@ -55,12 +90,13 @@ def create():
       return "Choose other name"
     
     attendee_users = request.params.get("to_users").split(",")
+    attendee_users.remove("")  # remove last comma ","
     moderator_users = [username]
     meeting_id = api.create_meeting(name, attendee_users, moderator_users)
     if meeting_id:
       url = api.join_meeting(username, password, meeting_id)
       redirect(url)
-  return "False"
+  redirect("/start")
 
 @route("/_join", method="POST")
 def join():
@@ -72,7 +108,7 @@ def join():
     url = api.join_meeting(username, password, meeting_id)
     if url:
       redirect(url)
-  return "False"
+  redirect("/start")
   
 
 @route("/suggest")
@@ -95,8 +131,8 @@ def change_password():
     if ok and new_passwd == retype:
       api.change_password(username, new_passwd)
       response.set_cookie('password', new_passwd, settings.cookie_secret)
-      return "OK"
-    return "False"
+      redirect("/start")
+    redirect("/change_password")
       
 
 @route("/static/:filename#.+#")
@@ -107,5 +143,5 @@ def static(filename):
 
 if __name__ == "__main__":
   debug(True)
-  run(host="0.0.0.0", port=8888, server="cherrypy")
+  run(host="0.0.0.0", port=8888)#, server="cherrypy")
   

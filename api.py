@@ -150,6 +150,24 @@ def join_meeting(username, password, meeting_id):
     return url
   return False
 
+def get_meeting_info(meeting_id):
+  key = "meeting:%s" % meeting_id
+  info = db.get(key)
+  if info:
+    info = eval(info)
+    return info
+
+def update(meeting_id, name, attendee_users):
+  key = "meeting:%s" % meeting_id
+  info = db.get(key)
+  if info:
+    info = eval(info)
+    info['name'] = name
+    info['attendee_users'] = attendee_users
+    db.set(key, info)
+    return True
+  return False
+
 def meeting_list():
   key = "meeting:*"
   keys = db.keys(key)
@@ -172,15 +190,19 @@ def is_running(meeting_id):
     return False
   return None
 
-def add_user(username, password):
+def add_user(username, password=''):
   key = "passwd:%s" % username.lower()
   if not db.get(key):
     if not password:
       password = str(uuid4())
       auto_passwd = password
-    password = md5(password).hexdigest()
-    db.set(key, password)
-    return auto_passwd
+      password = md5(password).hexdigest()
+      db.set(key, password)
+      return auto_passwd
+    else:
+      password = md5(password).hexdigest()
+      db.set(key, password)
+      return True
   return False
 
 def change_password(username, new_password):
