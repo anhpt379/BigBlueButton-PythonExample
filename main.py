@@ -29,8 +29,7 @@ def edit():
         info.get("attendee_users").remove("")
         
       for user in info.get("attendee_users"):
-        if user in users:
-          users.remove(user)
+        users.remove(user)
       return jinja2_template('drag-n-drop-lists.html', 
                              users=users,
                              info=info)
