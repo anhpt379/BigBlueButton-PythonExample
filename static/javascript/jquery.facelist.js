@@ -298,7 +298,7 @@ $.Autocompleter = function(input, options) {
 			failure(term);
 		}*/
 		//ORIGINAL END
-		$('#result_list').html('<div class="default">Searching...</div>');
+		$('#result_list').html('<div class="default">Enter username to search and press enter to select...</div>');
 		if(typeof options.url == 'string')
 		{
 			var sep = options.url.indexOf('?') == -1 ? '?' : '&'; 

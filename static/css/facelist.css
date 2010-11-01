@@ -58,7 +58,7 @@ border: solid 1px #3b5998;
 .token span.x,
 .token span.x_hover,
 .tokenhover span.x,
-.tokenhover span.x_hover{background-image:url('../images/token_x.gif');background-position:4px 2px;cursor:pointer;display:inline;padding:0px 6px 0px 5px; width: 10px; display: block; position:absolute; right: 0px; top: 3.5px;text-indent: -9999px}
+.tokenhover span.x_hover{background-image:url('../images/token_x.gif');cursor:pointer;display:inline;width: 10px; height: 10px; display: block; position:absolute; right: 0px; top: 5px;right: 3px;text-indent: -9999px}
 
 
 
