@@ -6,6 +6,12 @@ from simplejson import dumps
 import api
 import settings
 
+# unicode
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+# end hack
+
 @route("/_edit", method=["GET", "POST"])
 def edit():
   if request.method == "GET":

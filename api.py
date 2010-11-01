@@ -107,7 +107,11 @@ def _join(full_name, meeting_id, password):
 def create_meeting(name, attendee_users, moderator_users):
   attendee_pw = str(uuid4())
   moderator_pw = str(uuid4())
-  meeting_id = randint(10000, 99999)#str(uuid4())
+  while True: # get unique id
+    meeting_id = randint(10000, 99999)#str(uuid4())
+    key = "meeting:%s" % meeting_id
+    if not db.get(key):
+      break
   ok = _create(name, meeting_id, attendee_pw, moderator_pw)
   if ok:
     info = {"name": name,
