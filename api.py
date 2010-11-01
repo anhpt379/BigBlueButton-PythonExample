@@ -2,6 +2,7 @@
 # pylint: disable-msg=W0311
 from uuid import uuid4
 from time import time
+from random import randint
 from hashlib import md5, sha1
 from urllib import urlopen, quote_plus
 from xml.etree import ElementTree
@@ -86,8 +87,8 @@ def get_secure_uri(api_uri):
   return api_uri + "&checksum=%s" % checksum
   
 def _create(name, meeting_id, attendee_pw, moderator_pw):
-  query = "name=%s&meetingID=%s&attendeePW=%s&moderatorPW=%s" % \
-          (quote_plus(name), meeting_id, attendee_pw, moderator_pw)
+  query = "name=%s&meetingID=%s&attendeePW=%s&moderatorPW=%s&logoutURL=%s" % \
+          (quote_plus(name), meeting_id, attendee_pw, moderator_pw, settings.logout_url)
   api_uri = "create?%s" % query
   uri = get_secure_uri(api_uri)
   url = api_prefix + uri
@@ -106,7 +107,7 @@ def _join(full_name, meeting_id, password):
 def create_meeting(name, attendee_users, moderator_users):
   attendee_pw = str(uuid4())
   moderator_pw = str(uuid4())
-  meeting_id = str(uuid4())
+  meeting_id = randint(10000, 99999)#str(uuid4())
   ok = _create(name, meeting_id, attendee_pw, moderator_pw)
   if ok:
     info = {"name": name,
