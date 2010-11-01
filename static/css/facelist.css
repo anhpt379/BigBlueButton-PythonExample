@@ -12,7 +12,7 @@ ul.facelist {
 	height: auto !important; 
 	height: 1%; 
 	padding: 4px 5px 0; 
-	width: 512px;
+	width: 504px;
 }
 ul.facelist li { 
 	float: left; 
@@ -66,7 +66,7 @@ border: solid 1px #3b5998;
 
 #result_list { 
 	position: absolute; 
-	width: 524px; 
+	width: 516px; 
 }
 #result_list .default { 
 	padding: 5px 7px; 

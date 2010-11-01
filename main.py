@@ -29,7 +29,10 @@ def edit():
         attendee_users.remove("")
       
       attendee_users = [x.strip() for x in attendee_users]  # remove start/end space
-        
+      attendee_users.append(username)
+      
+      info['attendee_users'] = attendee_users
+      
       users = [x for x in users if x not in attendee_users]
 
       return jinja2_template('drag-n-drop-lists.html', 

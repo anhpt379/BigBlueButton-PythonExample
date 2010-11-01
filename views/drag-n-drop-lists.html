@@ -2,18 +2,22 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Select and drag?</title>
+    <title>Sửa thông tin cuộc họp</title>
     <style type="text/css">
       body, html {
+        margin: 0 auto;
         color: #333;
         font-family: Calibri;
         font-size: 11px;
+        left: 50%;
+        margin-left: -150px;
+        position: absolute;
       }
       
       .panel {
         float: left;
         width: 200px;
-        margin: 20px;
+        margin: 20px 20px 20px 0px;
       }
       
       ul {
@@ -22,14 +26,14 @@
         background: #ccc;
         padding: 20px;
         min-height: 150px;
-        width: 100px;
+        width: 180px;
       }
       
       li {
         display: block;
         border: 1px solid #999;
         background: #fff;
-        width: 80px;
+        width: 160px;
         padding: 5px 10px;
         margin-bottom: 5px;
       }
@@ -72,11 +76,16 @@
         font-size: 16px;
         padding: 3px;
         width: 70px;
+        float: right;
       }
       
       label {
         width: 150px;
         font-size: 13px;
+      }
+      
+      #attendees {
+        margin-left: 55px;
       }
     </style>
     <script type="text/javascript" src="/static/jquery.min.js">
@@ -408,16 +417,17 @@
       });
     </script>
   </head>
-  <body style="; cursor: auto; ">
+  <body style="cursor: auto; ">
+    <h1>Chỉnh sửa: </h1>
     <form id="edit" method="POST" action="/_edit">
       <label>
         Tên cuộc họp
       </label>
       <input type="text" name="name" value="{{ info.name }}"/>
       <div id="main">
-        <div class="panel" style="; ">
-          <h2 style="; ">All</h2>
-          <ul id="all-users" dds="0" class="ui-droppable" style="; ">
+        <div class="panel">
+          <h2>Thành viên</h2>
+          <ul id="all-users" dds="0" class="ui-droppable">
           {% for user in users %}
             <li id="{{ user }}" dds="4" style="cursor: pointer;" class="ui-draggable">
               {{ user }}
@@ -425,9 +435,9 @@
           {% endfor %}
           </ul>
         </div>
-        <div class="panel" style="; ">
-          <h2 style="; ">Danh sách tham gia</h2>
-          <ul id="attendees" dds="7" class="ui-droppable" style="; ">
+        <div id="attendees" class="panel">
+          <h2>Danh sách tham gia</h2>
+          <ul dds="7" class="ui-droppable">
             {% for user in info['attendee_users'] %}
               <li id="{{ user }}" dds="4" style="cursor: pointer;" class="ui-draggable">
                 {{ user }}

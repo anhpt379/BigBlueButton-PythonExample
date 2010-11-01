@@ -6,6 +6,6 @@ server_address = '123.30.53.46'
 
 cookie_secret = 'directory="/WorksigBlueButton'
 
-logout_url = "http://localhost:8080/start"
+logout_url = "http://123.30.53.46/start"
 
 admins = ["mod"]
