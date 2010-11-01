@@ -19,7 +19,7 @@ ul.facelist li {
 	margin: 0 5px 4px 0; 
 }
 ul.facelist li.token-input input { 
-	width: 150px; 
+	width: 500px; 
 	margin: 0; 
 	border: 1px solid #FFF; 
 	outline: 0; 
