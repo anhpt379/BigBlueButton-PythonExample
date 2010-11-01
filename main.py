@@ -35,7 +35,9 @@ def edit():
         attendee_users.remove("")
       
       attendee_users = [x.strip() for x in attendee_users]  # remove start/end space
-      attendee_users.append(username)
+      
+      if username not in attendee_users:
+        attendee_users.append(username)
       
       info['attendee_users'] = attendee_users
       
@@ -47,7 +49,7 @@ def edit():
   else:
     meeting_id = request.params.get("meeting_id")
     name = request.params.get("name")
-    attendee_users = request.params.get("attendees").split(",")
+    attendee_users = request.params.get("attendee_users").split(",")
     api.update(meeting_id, name, attendee_users)
     redirect('/start')
 

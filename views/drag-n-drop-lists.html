@@ -408,7 +408,7 @@
       $(function() {
         mychange = function($list) {
           $('#' + $list.attr('id') + '_serialised').html($.dds.serialize($list.attr('id')));
-          $("#users").attr("value", $.dds.serialize('attendees'));
+          $("#usr_list").attr("value", $.dds.serialize('attendee_users'));
         }
         $('ul').drag_drop_selectable({
           onListChange: mychange
@@ -437,7 +437,7 @@
         </div>
         <div id="attendees" class="panel">
           <h2>Danh sách tham gia</h2>
-          <ul dds="7" class="ui-droppable">
+          <ul id="attendee_users" dds="7" class="ui-droppable">
             {% for user in info['attendee_users'] %}
               <li id="{{ user }}" dds="4" style="cursor: pointer;" class="ui-draggable">
                 {{ user }}
@@ -446,7 +446,7 @@
           </ul>
         </div>
       </div>
-      <input type="hidden" id="users" name="attendees" value="" />
+      <input type="hidden" id="usr_list" name="attendee_users" value="" />
       <input type="hidden" name="meeting_id" value="{{ info.id }}" />
       <input type="submit" id="finish" value="Finish" />
     </form>
