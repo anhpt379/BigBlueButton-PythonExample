@@ -152,6 +152,14 @@ def join_meeting(username, password, meeting_id):
       else:
         return False
     url = _join(username, meeting_id, password)
+    if "FAILED" in urlopen(url).read(): # expired, recreate
+      info = get_meeting_info(meeting_id)
+      name = info.get("name")
+      attendee_users = info.get("attendee_users")
+      moderator_users = info.get("moderator_users")
+      remove(meeting_id)       # remove old
+      create_meeting(name, attendee_users, moderator_users)  # re-create
+      url = _join(username, meeting_id, password)
     return url
   return False
 
@@ -161,6 +169,10 @@ def get_meeting_info(meeting_id):
   if info:
     info = eval(info)
     return info
+  
+def remove(meeting_id):
+  key = "meeting:%s" % meeting_id
+  return db.delete(key)
 
 def update(meeting_id, name, attendee_users):
   key = "meeting:%s" % meeting_id
