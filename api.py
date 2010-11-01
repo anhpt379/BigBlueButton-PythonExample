@@ -151,6 +151,7 @@ def join_meeting(username, password, meeting_id):
         password = info.get("moderator_password")
       else:
         return False
+    
     url = _join(username, meeting_id, password)
     if "FAILED" in urlopen(url).read(): # expired, recreate
       info = get_meeting_info(meeting_id)

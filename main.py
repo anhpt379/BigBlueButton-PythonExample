@@ -50,6 +50,7 @@ def edit():
     meeting_id = request.params.get("meeting_id")
     name = request.params.get("name")
     attendee_users = request.params.get("attendee_users").split(",")
+    attendee_users = [x.strip() for x in attendee_users if x != ""]
     api.update(meeting_id, name, attendee_users)
     redirect('/start')
 
