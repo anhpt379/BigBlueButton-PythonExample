@@ -123,11 +123,9 @@ def create_meeting(name, attendee_users, moderator_users):
             "moderator_password": moderator_pw}
     key = "meeting:%s" % meeting_id
     db.set(key, str(info))
-#    db.expire(key, 86400)
     
     key = "meeting_name:%s" % name
     db.set(key, 1)
-#    db.expire(key, 86400)
     return meeting_id
   return False
 
@@ -153,13 +151,24 @@ def join_meeting(username, password, meeting_id):
         return False
     
     url = _join(username, meeting_id, password)
-    if "FAILED" in urlopen(url).read(): # expired, recreate
+    message = urlopen(url).read()
+    if "FAILED" in message: # expired, recreate
       info = get_meeting_info(meeting_id)
+      if not info:
+        return False
       name = info.get("name")
       attendee_users = info.get("attendee_users")
       moderator_users = info.get("moderator_users")
       remove(meeting_id)       # remove old
-      create_meeting(name, attendee_users, moderator_users)  # re-create
+      meeting_id = create_meeting(name, attendee_users, moderator_users)  # re-create     
+      key = "meeting:%s" % meeting_id
+      info = db.get(key)
+      info = eval(info)
+      info = dict(info) # for hide error mark
+      if username in info.get("attendee_users"):
+        password = info.get("attendee_password")
+      elif username in info.get("moderator_users"):
+        password = info.get("moderator_password")
       url = _join(username, meeting_id, password)
     return url
   return False
