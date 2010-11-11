@@ -5,6 +5,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <title>VCCorp - Video Conferencing</title>
     <link rel="stylesheet" href="/static/css/facelist.css" type="text/css" media="screen" title="Facelist" charset="utf-8" />
+    <link rel="stylesheet" href="/static/css/core.css" type="text/css" media="screen" charset="utf-8" />
     <!--[if IE]>
     <link href="css/facelist_ie.css" rel="stylesheet" type="text/css" />
     <![endif]-->
@@ -21,53 +22,7 @@
                               no_result: "No Names"
                             });                    
         });
-    </script>
-    <style type="text/css">
-      body {
-          margin: 0 auto;
-          width: 550px;
-          text-align: left;
-      }
-      input[type="text"], input[type="password"] {
-        border: 1px solid #999;
-        padding: 13px 7px 0px;
-        width: 500px;
-      }
-      
-      h1 {
-        margin-top: 2em;
-      }
-      
-      select {
-        width: 450px;
-        padding: 5px;
-      }
-      
-      input[type="submit"] {
-        padding: 3px;
-      }
-      
-      label {
-        width: 150px;
-        display: block;
-        font-size: 13px;
-      }
-      
-      .running {
-        color: black;
-      }
-      
-      .stopped {
-        color: #666;
-      }
-      
-      #message {
-        background: gree;
-        border: 1px dotted red;
-        margin-top: 30px;
-        padding: 7px 15px;
-      }
-    </style>    
+    </script> 
   </head>
   
   <body>  
@@ -76,8 +31,20 @@
       <br>
       <span id="message">{{ message }}</span>
     {% endif %}
-    <h1>Tạo cuộc họp mới:</h1> 
+    
+    <form method="POST" action="/_join">
+      <h2>Bắt đầu/Tham gia họp:</h2>
+      <select name="meeting_id" id="meeting_id">
+          {% for i in meeting_list %}
+            <option value="{{ i.id }}" class="{{ i['status'] }}" selected="selected">{{ i.name }}</option>
+          {% endfor %}
+      </select>
+      
+      <input type="submit" value="Vào họp" />      
+    </form>
+    
     <form method="POST" action="/_create" id="create-meeting" accept-charset="utf-8">
+      <h2>Tạo cuộc họp mới:</h2> 
       <label>Tên:</label> 
       <input type="text" name="name" />
      
@@ -87,10 +54,11 @@
       </ul>
       <div id="result_list" style="display:none;"></div>
       <br><br>
-      <input type="submit" value="Khởi tạo cuộc họp" />
+      <input type="submit" class="right" value="Khởi tạo cuộc họp" />
     </form>
-    <h1>Chỉnh sửa</h1>
+    
     <form method="GET" action="/_edit">
+      <h2>Chỉnh sửa</h2>
       <select name="meeting_id" id="meeting_id">
         {% for i in owners %}
           <option value="{{ i.id }}" selected="selected">{{ i.name }}</option>
@@ -99,17 +67,7 @@
       
       <input type="submit" value="Sửa" style="width: 60px;" /> 
     </form>
-    
-    <h1>Chọn cuộc họp:</h1>
-    <form method="POST" action="/_join">
-      <select name="meeting_id" id="meeting_id">
-          {% for i in meeting_list %}
-            <option value="{{ i.id }}" class="{{ i['status'] }}" selected="selected">{{ i.name }}</option>
-          {% endfor %}
-      </select>
-      
-      <input type="submit" value="Vào họp" />      
-    </form>
+
     
     {% if is_admin %}
       {% include 'user_manager.html' %}

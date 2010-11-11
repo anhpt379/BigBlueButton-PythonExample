@@ -17,6 +17,7 @@ def edit():
   password = request.get_cookie("password", settings.cookie_secret)
   ok = api.check(username, password)
   if ok:
+    username = username.lower()
     if request.method == "GET":
       meeting_id = request.params.get("meeting_id")
       info = api.get_meeting_info(meeting_id)

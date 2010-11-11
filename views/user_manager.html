@@ -1,22 +1,22 @@
 <div id="user-manager">    
-    <h1>Tạo tài khoản mới:</h1>
     <form method="POST" action="/_add_user">
+      <h2>Tạo tài khoản mới:</h2>
       <label>Tên đăng nhập</label>
       <input type="text" name="username" />
       <label>Mật khẩu</label>
       <input type="text" name="password" />
       <br><br>
-      <input type="submit" value="Tạo tài khoản" />      
+      <input type="submit" value="Tạo tài khoản" class="right" />      
     </form>
-    <h1>Xóa tài khoản:</h1>
     <form method="POST" action="/_remove_user">
+      <h2>Xóa tài khoản:</h2>
       <select name="username">
           {% for username in users %}
             <option value="{{ username }}" selected="selected">{{ username }}</option>
           {% endfor %}
       </select>
       
-      <input type="submit" value="Xóa" style="width: 60px;" />      
+      <input type="submit" value="Xóa" style="width: 60px;"/>      
     </form>
   
 </div>

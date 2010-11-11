@@ -144,10 +144,10 @@ def join_meeting(username, password, meeting_id):
     if info:
       info = eval(info)
       info = dict(info) # for hide error mark
-      if username in info.get("attendee_users"):
-        password = info.get("attendee_password")
-      elif username in info.get("moderator_users"):
+      if username in info.get("moderator_users"):
         password = info.get("moderator_password")
+      elif username in info.get("attendee_users"):
+        password = info.get("attendee_password")
       else:
         return False
     
