@@ -52,11 +52,30 @@
         display: block;
         font-size: 13px;
       }
+      
+      .running {
+        color: black;
+      }
+      
+      .stopped {
+        color: #666;
+      }
+      
+      #message {
+        background: gree;
+        border: 1px dotted red;
+        margin-top: 30px;
+        padding: 7px 15px;
+      }
     </style>    
   </head>
   
   <body>  
     <h1 style="text-align: center; font-size: 24px">VCCorp - Video Conferencing</h1>
+    {% if message %}
+      <br>
+      <span id="message">{{ message }}</span>
+    {% endif %}
     <h1>Tạo cuộc họp mới:</h1> 
     <form method="POST" action="/_create" id="create-meeting" accept-charset="utf-8">
       <label>Tên:</label> 
@@ -73,12 +92,9 @@
     <h1>Chỉnh sửa</h1>
     <form method="GET" action="/_edit">
       <select name="meeting_id" id="meeting_id">
-        {% if default %}
-          <option value="{{ default.id }}" selected="selected">{{ default.name }}</option>
-          {% for i in meeting_list %}
-            <option value="{{ i.id }}" selected="selected">{{ i.name }}</option>
-          {% endfor %}
-        {% endif %}
+        {% for i in owners %}
+          <option value="{{ i.id }}" selected="selected">{{ i.name }}</option>
+        {% endfor %}
       </select>
       
       <input type="submit" value="Sửa" style="width: 60px;" /> 
@@ -87,17 +103,20 @@
     <h1>Chọn cuộc họp:</h1>
     <form method="POST" action="/_join">
       <select name="meeting_id" id="meeting_id">
-        {% if default %}
-        <option value="{{ default.id }}" selected="selected">{{ default.name }}</option>
-        {% for i in meeting_list %}
-          <option value="{{ i.id }}" selected="selected">{{ i.name }}</option>
-        {% endfor %}
-        {% endif %}
+          {% for i in meeting_list %}
+            <option value="{{ i.id }}" class="{{ i['status'] }}" selected="selected">{{ i.name }}</option>
+          {% endfor %}
       </select>
       
       <input type="submit" value="Vào họp" />      
     </form>
+    
+    {% if is_admin %}
+      {% include 'user_manager.html' %}
+    {% endif %}
+    
     <br>
+    <span>Bạn đang đăng nhập với tên: <b>{{ username }}</b></span> |
     <a href="/change_password">Đổi mật khẩu</a> | 
     <a href="/logout">Đăng xuất</a>
   </body>  

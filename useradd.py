@@ -10,4 +10,5 @@ try:
   password = sys.argv[2]
 except IndexError:
   password = None
+  
 print api.add_user(username, password)

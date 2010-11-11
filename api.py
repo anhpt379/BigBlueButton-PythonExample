@@ -137,6 +137,7 @@ def is_valid(name):
 
 def join_meeting(username, password, meeting_id):
   ok = check(username, password)
+  username = username.lower()
   if ok:
     key = "meeting:%s" % meeting_id
     info = db.get(key)
@@ -182,14 +183,23 @@ def get_meeting_info(meeting_id):
   
 def remove(meeting_id):
   key = "meeting:%s" % meeting_id
+  info = db.get(key)
+  if key:
+    name = eval(info).get("name")
+    db.delete("meeting_name:%s" % name)
   return db.delete(key)
 
-def update(meeting_id, name, attendee_users):
+def update(username, meeting_id, name, attendee_users):
   key = "meeting:%s" % meeting_id
   info = db.get(key)
   if info:
     info = eval(info)
     info['name'] = name
+    
+    username = username.lower()
+    if username not in info['moderator_users']:
+      info['moderator_users'].append(username)
+      
     info['attendee_users'] = attendee_users
     db.set(key, info)
     return True
@@ -208,10 +218,11 @@ def meeting_list():
   
 def is_running(meeting_id):
   api_uri = "isMeetingRunning?meetingID=%s" % meeting_id
+  api_uri = get_secure_uri(api_uri)
   url = api_prefix + api_uri
   xml_string = urlopen(url).read()
   params = xml2dict(xml_string)
-  if params.get("returnCode") == "SUCCESS":
+  if params.get("returncode") == "SUCCESS":
     if params.get("running") == "true":
       return True
     return False
@@ -231,6 +242,9 @@ def add_user(username, password=''):
       db.set(key, password)
       return True
   return False
+
+def remove_user(username):
+  return db.delete("passwd:%s" % username.lower())
 
 def change_password(username, new_password):
   key = "passwd:%s" % username.lower()

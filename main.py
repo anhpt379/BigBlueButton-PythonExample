@@ -2,7 +2,6 @@
 # pylint: disable-msg=W0311
 from bottle import route, redirect, request, run, jinja2_template, \
                     debug, static_file, response
-from simplejson import dumps
 import api
 import settings
 
@@ -14,15 +13,15 @@ sys.setdefaultencoding('utf-8')
 
 @route("/_edit", method=["GET", "POST"])
 def edit():
-  if request.method == "GET":
-    username = request.get_cookie("username", settings.cookie_secret)
-    password = request.get_cookie("password", settings.cookie_secret)
-    ok = api.check(username, password)
-    if ok:
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
+  ok = api.check(username, password)
+  if ok:
+    if request.method == "GET":
       meeting_id = request.params.get("meeting_id")
       info = api.get_meeting_info(meeting_id)
       
-      if username not in info.get("moderator_users"):
+      if username not in info.get("moderator_users") and username not in settings.admins:
         redirect("/start")
       
       users = api.suggest("")
@@ -43,17 +42,35 @@ def edit():
       
       users = [x for x in users if x not in attendee_users]
 
-      return jinja2_template('drag-n-drop-lists.html', 
+      return jinja2_template('edit.html', 
                              users=users,
                              info=info)
-  else:
-    meeting_id = request.params.get("meeting_id")
-    name = request.params.get("name")
-    attendee_users = request.params.get("attendee_users").split(",")
-    attendee_users = [x.strip() for x in attendee_users if x != ""]
-    api.update(meeting_id, name, attendee_users)
-    redirect('/start')
+    else:
+      meeting_id = request.params.get("meeting_id")
+      name = request.params.get("name")
+      attendee_users = request.params.get("attendee_users").split(",")
+      attendee_users = [x.strip() for x in attendee_users if x != ""]
+      api.update(username, meeting_id, name, attendee_users)
+      redirect('/start')
+    
 
+@route("/_delete", method="POST")
+def delete():
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
+  ok = api.check(username, password)
+  if ok:
+    meeting_id = request.params.get("meeting_id")
+    if username in settings.admins:
+      api.remove(meeting_id)
+    else:
+      info = api.get_meeting_info(meeting_id)
+      if username in info.get("moderator_users"):
+        api.remove(meeting_id)
+  redirect("/start")
+      
+  
+@route("/")
 @route("/start")
 def main():
   username = request.get_cookie("username", settings.cookie_secret)
@@ -61,13 +78,31 @@ def main():
   ok = api.check(username, password)
   if not ok:
     redirect("/login")
-  default = None
   meeting_list = api.meeting_list()
-  if meeting_list:
-    default = meeting_list[0]
-    meeting_list.pop(0)
-  return jinja2_template("main.html", default=default, 
-                         meeting_list=meeting_list)
+
+  owners = []
+  for meeting in meeting_list:
+    if username.lower() in settings.admins or username.lower() in meeting.get("moderator_users"):
+      owners.append(meeting)
+    is_running = api.is_running(meeting.get('id'))
+    if is_running:
+      meeting['status'] = "running"
+    else:
+      meeting['status'] = "stopped"
+  
+  if username.lower() in settings.admins:
+    is_admin = True
+    users = api.suggest("")
+  else:
+    is_admin = users = None
+  message = request.params.get("message")
+  return jinja2_template("main.html", 
+                         message=message, 
+                         is_admin=is_admin,
+                         owners=owners,
+                         meeting_list=meeting_list, 
+                         username=username,
+                         users=users)
   
 @route("/login", method=["GET", "POST"])
 def login():
@@ -121,8 +156,30 @@ def join():
     url = api.join_meeting(username, password, meeting_id)
     if url:
       redirect(url)
-  redirect("/start")
+  redirect("/start?message=permission+denied")
   
+@route("/_add_user", method="POST")
+def add_user():
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
+  ok = api.check(username, password)
+  if ok: 
+    username = request.params.get("username")
+    password = request.params.get("password")
+    api.add_user(username, password)
+    redirect("/start?message=ok")
+  redirect("/start?message=permission+denied")
+  
+@route("/_remove_user", method="POST")
+def remove_user():
+  username = request.get_cookie("username", settings.cookie_secret)
+  password = request.get_cookie("password", settings.cookie_secret)
+  ok = api.check(username, password)
+  if ok: 
+    username = request.params.get("username")
+    print username
+    api.remove_user(username)
+  redirect("/start") 
 
 @route("/suggest")
 def suggest():

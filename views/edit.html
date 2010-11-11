@@ -423,6 +423,7 @@
     </script>
   </head>
   <body style="cursor: auto; ">
+    <h1 style="text-align: center; font-size: 24px">VCCorp - Video Conferencing</h1>
     <h1>Chỉnh sửa: </h1>
     <form id="edit" method="POST" action="/_edit">
       <label>
@@ -454,6 +455,10 @@
       <input type="hidden" id="usr_list" name="attendee_users" value="" />
       <input type="hidden" name="meeting_id" value="{{ info.id }}" />
       <input type="submit" id="finish" value="Finish" />
+    </form>
+    <form method="POST" action="/_delete">
+      <input name="meeting_id" value="{{ info.id }}" type="hidden" />
+      <input type="submit" value="Xóa" style="color: red;margin-right: 20px;"/>
     </form>
   </body>
 </html>
