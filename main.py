@@ -140,7 +140,7 @@ def create():
     
     attendee_users = request.params.get("to_users").split(",")
     attendee_users.remove("")  # remove last comma ","
-    moderator_users = [username]
+    moderator_users = [username.lower()]
     meeting_id = api.create_meeting(name, attendee_users, moderator_users)
     if meeting_id:
       url = api.join_meeting(username, password, meeting_id)
