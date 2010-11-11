@@ -4,7 +4,7 @@ html {
 
 body {
   margin: 0 auto;
-  width: 600px;
+  width: 555px;
   text-align: left;
 }
 
@@ -12,7 +12,7 @@ form {
   border: solid 1px #CCC;
   width: 514px;
   margin-bottom: 20px;
-  padding: 20px 20px 50px;
+  padding: 5px 20px 30px;
   opacity: 0.8;
 }
 
@@ -51,6 +51,16 @@ label {
   margin-top: 10px;
 }
 
+a {
+  color: #00BBFF;
+  text-decoration: none;
+}
+
+a:hover {
+  border-bottom: 1px dotted #00BBFF;
+  text-shadow: #06F 0px 0px 1px;
+}
+
 .running {
   color: black;
 }
@@ -64,4 +74,9 @@ label {
   border: 1px dotted red;
   margin-top: 30px;
   padding: 7px 15px;
+}
+
+#menu {
+  text-align: right;
+  margin-bottom: 10px;
 }

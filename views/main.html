@@ -27,6 +27,14 @@
   
   <body>  
     <h1 style="text-align: center; font-size: 24px">VCCorp - Video Conferencing</h1>
+    
+    
+    <br>
+    <div id="menu">
+      <span>Bạn đang đăng nhập với tên: <b>{{ username }}</b></span> |
+      <a href="/change_password">Đổi mật khẩu</a> | 
+      <a href="/logout">Đăng xuất</a>
+    </div>
     {% if message %}
       <br>
       <span id="message">{{ message }}</span>
@@ -72,10 +80,5 @@
     {% if is_admin %}
       {% include 'user_manager.html' %}
     {% endif %}
-    
-    <br>
-    <span>Bạn đang đăng nhập với tên: <b>{{ username }}</b></span> |
-    <a href="/change_password">Đổi mật khẩu</a> | 
-    <a href="/logout">Đăng xuất</a>
   </body>  
 </html>
